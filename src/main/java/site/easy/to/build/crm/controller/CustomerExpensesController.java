@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import site.easy.to.build.crm.entity.Customer;
 import site.easy.to.build.crm.entity.CustomerExpenses;
@@ -31,6 +32,9 @@ import site.easy.to.build.crm.service.ticket.TicketServiceImpl;
 import site.easy.to.build.crm.service.user.UserProfileService;
 import site.easy.to.build.crm.service.user.UserService;
 import site.easy.to.build.crm.util.AuthenticationUtils;
+import site.easy.to.build.crm.util.myexception.DepassementException;
+import site.easy.to.build.crm.util.myexception.TauxAtteintException;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -103,7 +107,7 @@ public class CustomerExpensesController {
     
     @PostMapping("/ticket")
     public String insertTicket(@ModelAttribute("customerExpenses") CustomerExpenses customerExpenses, BindingResult bindingResult,
-                               Model model,Authentication authentication) {
+                               Model model,Authentication authentication, RedirectAttributes redirectAttributes) {
         int userId = authenticationUtils.getLoggedInUserId(authentication);
         User user = userService.findById(userId);
         if(user.isInactiveUser()) {
@@ -113,10 +117,30 @@ public class CustomerExpensesController {
         customerExpenses.setCreatedAt(LocalDateTime.now());
         Customer customer = customerExpenses.getTicket().getCustomer();
         customerExpenses.setCustomer(customer);
-        customerExpensesService.save(customerExpenses);
+        System.out.println("CUSTOMER ID:" +customerExpenses.getId());
+        CustomerExpenses saved = customerExpensesService.save(customerExpenses);
+        try {
+            customerExpensesService.insertExpenses(saved);
+        } catch (TauxAtteintException e) {
+            System.out.println("FAILED:" + e.getMessage());
+            // e.printStackTrace();
+
+                // Ajouter un message d'alerte pour l'exception
+            redirectAttributes.addFlashAttribute("warningMessage", e.getMessage());
+            
+            // Rediriger vers la page de ticket avec l'alerte
+            return "redirect:/customer-expenses/ticket";
+        }catch(DepassementException ex){
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            redirectAttributes.addFlashAttribute("expenses", ex.getCustomerExpenses());
+            // Rediriger vers la page de ticket avec l'alerte
+            return "redirect:/customer-expenses/ticket";
+        }catch(Exception exp){
+            exp.printStackTrace();
+        }
+        
         return "redirect:/customer-expenses/ticket";
-        
-        
+ 
     }
 
     @PostMapping("/lead")
@@ -133,6 +157,19 @@ public class CustomerExpensesController {
         customerExpenses.setCustomer(customer);
         customerExpensesService.save(customerExpenses);
         return "redirect:/customer-expenses/lead";        
+    }
+
+    @PostMapping("/confirm-expense-ticket")
+    public String confirmExpenses(@ModelAttribute("expenses") CustomerExpenses customerExpenses, BindingResult bindingResult,
+                               Model model,Authentication authentication) {
+        try {
+            System.out.println("Here whe are");
+            CustomerExpenses real = customerExpensesService.findById(customerExpenses.getId());
+            customerExpensesService.confirm(real);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "redirect:/customer-expenses/ticket";
     }
     
 }

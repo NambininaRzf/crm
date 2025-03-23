@@ -2,9 +2,11 @@ package site.easy.to.build.crm.repository;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import site.easy.to.build.crm.entity.CustomerBudget;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -27,4 +29,7 @@ public interface CustomerBudgetRepository extends JpaRepository<CustomerBudget, 
 
     // Compter le nombre de budgets pour un utilisateur donné
     long countByUserId(int userId);
+
+    @Query("SELECT COALESCE(SUM(cb.amount), 0) FROM CustomerBudget cb WHERE cb.customer.customerId = :customerId")
+    BigDecimal getTotalBudgetByCustomerId(int customerId);
 }

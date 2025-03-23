@@ -73,7 +73,7 @@ public class CustomerBudgetController {
     }
 
     @PostMapping("/budget")
-    public String insertTicket(@ModelAttribute("customerBudget") CustomerBudget customerBudget, BindingResult bindingResult,
+    public String insertBudget(@ModelAttribute("customerBudget") CustomerBudget customerBudget, BindingResult bindingResult,
                                Model model,Authentication authentication) {
         int userId = authenticationUtils.getLoggedInUserId(authentication);
         User user = userService.findById(userId);

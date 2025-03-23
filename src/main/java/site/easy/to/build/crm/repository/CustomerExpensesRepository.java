@@ -2,9 +2,11 @@ package site.easy.to.build.crm.repository;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import site.easy.to.build.crm.entity.CustomerExpenses;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -27,4 +29,8 @@ public interface CustomerExpensesRepository extends JpaRepository<CustomerExpens
 
     // Compter le nombre de dépenses pour un utilisateur donné
     long countByUserId(int userId);
+
+    // somme dépenses pour un customer
+    @Query("SELECT COALESCE(SUM(cexp.amount), 0) FROM CustomerExpenses cexp WHERE cexp.customer.customerId = :customerId AND cexp.status =1")
+    BigDecimal getTotalExpensesByCustomerId(int customerId);
 }
