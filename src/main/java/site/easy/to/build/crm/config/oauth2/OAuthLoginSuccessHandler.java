@@ -97,6 +97,7 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
         }
         OAuthUser oAuthUser = authenticationUtils.getOAuthUserFromAuthentication(authentication);
         if (loggedUser != null && loggedUser.getOauthUser() == null && oAuthUser == null) {
+            System.out.println("USER LOGGED IN SESSION");
             oAuthUser = new OAuthUser();
             oAuthUser.getGrantedScopes().add("openid");
             oAuthUser.getGrantedScopes().add("email");
@@ -107,19 +108,23 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
             oAuthUserService.save(oAuthUser);
             response.sendRedirect("/connect-accounts");
         } else {
-
+            System.out.println("FIRST LOGGING");
             String email = ((DefaultOidcUser) authentication.getPrincipal()).getEmail();
+            System.out.println("EMAIL USER: "+email);
             String img = ((DefaultOidcUser) authentication.getPrincipal()).getPicture();
             String firstName = ((DefaultOidcUser) authentication.getPrincipal()).getGivenName();
             String lastName = ((DefaultOidcUser) authentication.getPrincipal()).getFamilyName();
             String username = email.split("@")[0];
 
 
-            int currUserId = authenticationUtils.getLoggedInUserId(authentication);
-            User user = userService.findById(currUserId);
+            // int currUserId = authenticationUtils.getLoggedInUserId(authentication);
+            // int currUserId = authenticationUtils.getLoggedInUserId(authentication);
+            User user = userService.findByEmail(email);
+            // System.out.println("ID USER: "+user.getId());
             OAuthUser loggedOAuthUser;
 
             if (user == null) {
+                System.out.println("USER NOT IN TABLE");
                 user = new User();
                 UserProfile userProfile = new UserProfile();
                 userProfile.setFirstName(firstName);
@@ -152,7 +157,14 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
                 loggedOAuthUser.getGrantedScopes().addAll(List.of("openid", "email", "profile"));
                 oAuthUserService.updateOAuthUserTokens(loggedOAuthUser, oAuth2AccessToken, oAuth2RefreshToken);
             } else {
+                System.out.println("USER IN TABLE");
                 loggedOAuthUser = user.getOauthUser();
+                if (loggedOAuthUser==null) {
+                    loggedOAuthUser = new OAuthUser();
+                    loggedOAuthUser.setEmail(email);
+                    loggedOAuthUser.getGrantedScopes().addAll(List.of("openid", "email", "profile"));
+                    oAuthUserService.updateOAuthUserTokens(loggedOAuthUser, oAuth2AccessToken, oAuth2RefreshToken);
+                }
             }
 
             oAuthUserService.save(loggedOAuthUser, user);

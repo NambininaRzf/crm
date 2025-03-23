@@ -1,0 +1,15 @@
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE `email_template`;
+TRUNCATE TABLE `customer_login_info`;
+TRUNCATE TABLE `customer`;
+TRUNCATE TABLE `trigger_lead`;
+TRUNCATE TABLE `trigger_ticket`;
+TRUNCATE TABLE `trigger_contract`;
+TRUNCATE TABLE `contract_settings`;
+TRUNCATE TABLE `employee`;
+TRUNCATE TABLE `file`;
+TRUNCATE TABLE `google_drive_file`;
+TRUNCATE TABLE `lead_action`;
+TRUNCATE TABLE `lead_settings`;
+TRUNCATE TABLE `ticket_settings`;
+SET FOREIGN_KEY_CHECKS = 1;

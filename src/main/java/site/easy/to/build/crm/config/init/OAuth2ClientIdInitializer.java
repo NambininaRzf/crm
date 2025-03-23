@@ -28,7 +28,7 @@ public class OAuth2ClientIdInitializer implements EnvironmentPostProcessor {
     private static final String DEFAULT_GOOGLE_GRANT_TYPE = "authorization_code";
 
     private static final String GOOGLE_AUTHORIZATION_URI_PROPERTY = "spring.security.oauth2.client.provider.google.authorization-uri";
-    private static final String DEFAULT_GOOGLE_AUTHORIZATION_URI = "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline";
+    private static final String DEFAULT_GOOGLE_AUTHORIZATION_URI = "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent";
 
     private static final String GOOGLE_URI_TEMPLATE_PROPERTY = "spring.security.oauth2.client.registration.google.authorization-uri-template";
     private static final String DEFAULT_GOOGLE_URI_TEMPLATE = "https://accounts.google.com/o/oauth2/auth?access_type=offline&response_type=code&client_id={clientId}&scope={scopes}&state={state}&redirect_uri={redirectUri}";
