@@ -166,6 +166,31 @@
                         <li><a th:href="${home + 'import/import-csv'}">Import CSV</a></li>
                     </ul>
                 </li>
+                <!-- INSERTION BUDGET -->
+                <li th:if="${#authorization.expression('hasRole(''ROLE_MANAGER'')')}" class="nav-small-cap">---  Budget</li>
+                <li th:if="${#authorization.expression('hasRole(''ROLE_MANAGER'')')}">
+                    <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)">
+                        <i class="fas fa-file-contract"></i>
+                        <span class="hide-menu">Insert</span>
+                    </a>
+                    <ul class="collapse">
+                        <!--                        <li><a href="/all-customers">All customers</a></li>-->
+                        <li><a th:href="${home + 'customer-budget/budget'}">Budget</a></li>
+                    </ul>
+                </li>
+                            <!-- INSERTION DEPENSES -->
+                <li th:if="${#authorization.expression('hasRole(''ROLE_MANAGER'')')}" class="nav-small-cap">--- Expenses</li>
+                <li th:if="${#authorization.expression('hasRole(''ROLE_MANAGER'')')}">
+                    <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)">
+                        <i class="fas fa-file-contract"></i>
+                        <span class="hide-menu">Insert</span>
+                    </a>
+                    <ul class="collapse">
+                        <!--                        <li><a href="/all-customers">All customers</a></li>-->
+                        <li><a th:href="${home + 'customer-expenses/ticket'}">Ticket Expenses</a></li>
+                        <li><a th:href="${home + 'customer-expenses/lead'}">Lead Expenses</a></li>
+                    </ul>
+                </li>
             </ul>
             <ul id="sidebarnav" th:if="${#authorization.expression('hasRole(''ROLE_CUSTOMER'')')}">
                 <li class="user-pro">
