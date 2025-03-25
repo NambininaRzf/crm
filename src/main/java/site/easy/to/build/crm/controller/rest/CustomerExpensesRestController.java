@@ -1,5 +1,6 @@
 package site.easy.to.build.crm.controller.rest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import site.easy.to.build.crm.entity.Customer;
 import site.easy.to.build.crm.entity.CustomerExpenses;
+import site.easy.to.build.crm.entity.TauxStorage;
 import site.easy.to.build.crm.model.dto.ConfigRequest;
 import site.easy.to.build.crm.security.JwtUtil;
 import site.easy.to.build.crm.service.customer.CustomerExpensesService;
@@ -43,6 +45,32 @@ public class CustomerExpensesRestController {
             return ResponseEntity.ok(expenses);
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<String> updateTaux(@RequestBody ConfigRequest tokenRequest) {
+        // System.out.println("ETO");
+        String token = tokenRequest.getToken();
+        String username = tokenRequest.getUsername();
+        CustomerExpenses amountUpdate = tokenRequest.getAmountUpdate();
+
+        System.out.println("Param token: " + token);
+
+        if (jwtUtil.validateToken(token, username)) {
+            try {
+                System.out.println("EXPENSE id:" +amountUpdate.getId());
+                System.out.println("UPDATE EXPENSE");
+                CustomerExpenses inTable = customerExpensesService.findById(amountUpdate.getId());
+                inTable.setAmount(amountUpdate.getAmount());
+                customerExpensesService.save(inTable);
+                return ResponseEntity.ok("succes");
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                     .body("Erreur lors de l'update :" + e.getMessage());
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("ACCESS NOT ALLOWED");
     }
 
     // @GetMapping
