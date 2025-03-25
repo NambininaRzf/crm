@@ -13,6 +13,7 @@ import site.easy.to.build.crm.util.myexception.DepassementException;
 import site.easy.to.build.crm.util.myexception.TauxAtteintException;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -98,5 +99,9 @@ public class CustomerExpensesService {
 
     public CustomerExpenses findById(long id){
         return customerExpensesRepository.findById(id);
+    }
+
+    public List<CustomerExpenses>  findAll(){
+        return customerExpensesRepository.findAll(); 
     }
 }

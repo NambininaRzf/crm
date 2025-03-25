@@ -1,5 +1,6 @@
 package site.easy.to.build.crm.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -37,17 +38,19 @@ public class User {
     @UniqueEmail(groups = {Default.class, ValidationGroupInclusion.class, RegistrationValidation.class})
     private String email;
 
-
+    @JsonIgnore
     @Column(name = "password")
     @NotBlank(message = "Password is required", groups = {RegistrationValidation.class,SetEmployeePasswordValidation.class})
     private String password;
 
+    @JsonIgnore
     @Column(name = "status")
     @NotBlank(message = "Status is required", groups = {Default.class, ValidationGroupInclusion.class,ManagerUpdateValidationGroupInclusion.class})
     @Pattern(regexp = "^(active|inactive|suspended)$", message = "Invalid status",
             groups = {Default.class, ValidationGroupInclusion.class, ManagerUpdateValidationGroupInclusion.class})
     private String status;
-
+    
+    @JsonIgnore
     @Column(name = "token")
     private String token;
 
@@ -63,11 +66,13 @@ public class User {
     @Column(name = "is_password_set")
     private boolean isPasswordSet;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("user")
     @PrimaryKeyJoinColumn
     private OAuthUser oauthUser;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
@@ -77,6 +82,7 @@ public class User {
     @NotEmpty(message = "At least one role must be selected")
     private List<Role> roles;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("user")
     private UserProfile userProfile;

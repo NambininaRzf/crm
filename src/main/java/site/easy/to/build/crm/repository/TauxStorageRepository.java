@@ -9,4 +9,7 @@ public interface TauxStorageRepository extends JpaRepository<TauxStorage, Intege
 
     // Récupérer le dernier taux créé
     TauxStorage findTopByOrderByCreatedAtDesc();
+
+    // public TauxStorage save(TauxStorage tauxStorage);
+    // public TauxStorage update(TauxStorage tauxStorage);
 }

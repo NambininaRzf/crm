@@ -23,6 +23,7 @@ public class TauxStorageService implements TauxStorageServiceInterface {
         return tauxStorageRepository.save(tauxStorage);
     }
 
+
     @Override
     public List<TauxStorage> findAll() {
         return tauxStorageRepository.findAll();

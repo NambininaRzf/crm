@@ -145,7 +145,7 @@ public class CustomerExpensesController {
 
     @PostMapping("/lead")
     public String insertLead(@ModelAttribute("customerExpenses") CustomerExpenses customerExpenses, BindingResult bindingResult,
-                               Model model,Authentication authentication) {
+                               Model model,Authentication authentication,RedirectAttributes redirectAttributes) {
         int userId = authenticationUtils.getLoggedInUserId(authentication);
         User user = userService.findById(userId);
         if(user.isInactiveUser()) {
@@ -155,12 +155,33 @@ public class CustomerExpensesController {
         customerExpenses.setCreatedAt(LocalDateTime.now());
         Customer customer = customerExpenses.getLead().getCustomer();
         customerExpenses.setCustomer(customer);
-        customerExpensesService.save(customerExpenses);
+        System.out.println("CUSTOMER ID:" +customerExpenses.getId());
+        CustomerExpenses saved = customerExpensesService.save(customerExpenses);
+        try {
+            customerExpensesService.insertExpenses(saved);
+        } catch (TauxAtteintException e) {
+            System.out.println("FAILED:" + e.getMessage());
+            // e.printStackTrace();
+
+                // Ajouter un message d'alerte pour l'exception
+            redirectAttributes.addFlashAttribute("warningMessage", e.getMessage());
+            
+            // Rediriger vers la page de ticket avec l'alerte
+            return "redirect:/customer-expenses/lead";
+        }catch(DepassementException ex){
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            redirectAttributes.addFlashAttribute("expenses", ex.getCustomerExpenses());
+            // Rediriger vers la page de ticket avec l'alerte
+            return "redirect:/customer-expenses/lead";
+        }catch(Exception exp){
+            exp.printStackTrace();
+        }
+        
         return "redirect:/customer-expenses/lead";        
     }
 
     @PostMapping("/confirm-expense-ticket")
-    public String confirmExpenses(@ModelAttribute("expenses") CustomerExpenses customerExpenses, BindingResult bindingResult,
+    public String confirmExpensesTicket(@ModelAttribute("expenses") CustomerExpenses customerExpenses, BindingResult bindingResult,
                                Model model,Authentication authentication) {
         try {
             System.out.println("Here whe are");
@@ -171,5 +192,18 @@ public class CustomerExpensesController {
         }
         return "redirect:/customer-expenses/ticket";
     }
+
+    // @PostMapping("/confirm-expense-lead")
+    // public String confirmExpensesLead(@ModelAttribute("expenses") CustomerExpenses customerExpenses, BindingResult bindingResult,
+    //                            Model model,Authentication authentication) {
+    //     try {
+    //         System.out.println("Here whe are");
+    //         CustomerExpenses real = customerExpensesService.findById(customerExpenses.getId());
+    //         customerExpensesService.confirm(real);
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //     }
+    //     return "redirect:/customer-expenses/lead";
+    // }
     
 }

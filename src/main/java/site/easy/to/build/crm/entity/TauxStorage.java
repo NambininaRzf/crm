@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
+import org.hibernate.envers.Audited;
+
 @Entity
 @Table(name = "taux_storaged")
+@Audited
 public class TauxStorage {
 
     @Id
@@ -17,7 +20,7 @@ public class TauxStorage {
     @NotNull(message = "Taux alerte is required")
     private double tauxAlerte;
 
-    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_at", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt = LocalDateTime.now();
 
     // Constructeurs

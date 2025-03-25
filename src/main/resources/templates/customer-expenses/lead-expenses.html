@@ -34,6 +34,54 @@
         <p class="loader__label">CRM</p>
     </div>
 </div>
+
+<!-- Modal warning -->
+<div class="modal fade" id="warningModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">Reminder</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div th:if="${warningMessage}">
+                    <span th:text="${warningMessage}"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">I GET IT</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Error -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">Warning</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div th:if="${errorMessage}">
+                    <span th:text="${errorMessage}"></span>
+                </div>
+            </div>
+            <div th:if="${expenses}"  class="modal-footer">
+                <form th:object="${expenses}" th:action="@{/customer-expenses/confirm-expense-ticket}"  method="post">
+                    <input type="hidden" th:field="*{id}" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">ABORT</button>
+                    <button type="submit" class="btn btn-secondary" >ACCEPT</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- ============================================================== -->
 <!-- Main wrapper - style you can find in pages.scss -->
 <!-- ============================================================== -->
@@ -156,6 +204,19 @@
     $('#config-table').DataTable({
         responsive: true
     });
+</script>
+<script th:inline="javascript">
+    // Vérifier si un message d'erreur existe et afficher le modal
+    if ([[${warningMessage}]] != null) {
+        $('#warningModal').modal('show');
+    }
+</script>
+
+<script th:inline="javascript">
+    // Vérifier si un message d'erreur existe et afficher le modal
+    if ([[${errorMessage}]] != null) {
+        $('#errorModal').modal('show');
+    }
 </script>
 </body>
 </html>

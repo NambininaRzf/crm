@@ -1,13 +1,20 @@
 package site.easy.to.build.crm.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -19,6 +26,7 @@ import site.easy.to.build.crm.config.oauth2.OAuthLoginSuccessHandler;
 import site.easy.to.build.crm.service.user.OAuthUserService;
 import site.easy.to.build.crm.util.StringUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -46,6 +54,7 @@ public class SecurityConfig {
         this.environment = environment;
     }
 
+
     @Bean
     @Order(2)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -54,12 +63,15 @@ public class SecurityConfig {
         httpSessionCsrfTokenRepository.setParameterName("csrf");
 
         http.csrf((csrf) -> csrf
+                .ignoringRequestMatchers("/api/**")
                 .csrfTokenRepository(httpSessionCsrfTokenRepository)
         );
 
         http.
                 authorizeHttpRequests((authorize) -> authorize
-
+                        .requestMatchers(HttpMethod.POST, "/api/**").permitAll()
+                        .requestMatchers("/api/customers/**").permitAll() //test api rest get users
+                        .requestMatchers("/api/expenses/**").permitAll() //test api rest get users
                         .requestMatchers("/register/**").permitAll()
                         .requestMatchers("/set-employee-password/**").permitAll()
                         .requestMatchers("/change-password/**").permitAll()
@@ -113,8 +125,13 @@ public class SecurityConfig {
         httpSessionCsrfTokenRepository.setParameterName("csrf");
 
         http.csrf((csrf) -> csrf
+                .ignoringRequestMatchers("/api/**")
                 .csrfTokenRepository(httpSessionCsrfTokenRepository)
         );
+
+         // Désactiver CSRF pour toutes les requêtes API
+   
+
 
         http.securityMatcher("/customer-login/**").
                 authorizeHttpRequests((authorize) -> authorize
@@ -146,4 +163,20 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+        @Bean
+        public AuthenticationManager authenticationManager(HttpSecurity http, 
+                                                        @Qualifier("crmUserDetails") UserDetailsService userDetailsService, 
+                                                        PasswordEncoder passwordEncoder) throws Exception {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
+
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .authenticationProvider(authenticationProvider)
+                .build();
+        }
+
+
+
 }
