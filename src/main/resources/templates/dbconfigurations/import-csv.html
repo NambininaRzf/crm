@@ -77,15 +77,44 @@
                             <h4 class="card-title">Import-CSV</h4>
                             <div class="card-body">
                                 <form enctype="multipart/form-data"  id="email-form" th:action="@{/import/import-csv}" th:object="${csvfile}" method="post">
-                                    <label class="m-t-20" for="email">File:</label>
+                                    <!-- file1 -->
+                                    <label class="m-t-20" for="email">File 1:</label>
                                     <div class="input-group">
-                                        <input th:field="*{csvFile}" type="file" name="file">
+                                        <input th:field="*{csvFile1}" type="file" name="file">
                                     </div>
-                                    <span style="color: red;" th:if="${#fields.hasErrors('fileNotEmpty')}" th:errors="*{fileNotEmpty}"></span>
-                                    <span style="color: red;" th:if="${#fields.hasErrors('csvFile')}" th:errors="*{csvFile}"></span>
-                                    <div th:if="${validationErrors}" class="input-group">
+                                    <span style="color: red;" th:if="${#fields.hasErrors('file1NotEmpty')}" th:errors="*{file1NotEmpty}"></span>
+                                    <span style="color: red;" th:if="${#fields.hasErrors('csvFile1')}" th:errors="*{csvFile1}"></span>
+                                    <div th:if="${validationErrors1}" class="input-group">
                                         <ul>
-                                            <li th:each="error : ${validationErrors}" style="color: red;">
+                                            <li th:each="error : ${validationErrors1}" style="color: red;">
+                                                <span th:text="${error}"></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <!-- file 2 -->
+                                    <label class="m-t-20" for="email">File 2:</label>
+                                    <div class="input-group">
+                                        <input th:field="*{csvFile2}" type="file" name="file">
+                                    </div>
+                                    <span style="color: red;" th:if="${#fields.hasErrors('file2NotEmpty')}" th:errors="*{file2NotEmpty}"></span>
+                                    <span style="color: red;" th:if="${#fields.hasErrors('csvFile2')}" th:errors="*{csvFile2}"></span>
+                                    <div th:if="${validationErrors2}" class="input-group">
+                                        <ul>
+                                            <li th:each="error : ${validationErrors2}" style="color: red;">
+                                                <span th:text="${error}"></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <!-- file 3 -->
+                                    <label class="m-t-20" for="email">File 3:</label>
+                                    <div class="input-group">
+                                        <input th:field="*{csvFile3}" type="file" name="file">
+                                    </div>
+                                    <span style="color: red;" th:if="${#fields.hasErrors('file3NotEmpty')}" th:errors="*{file3NotEmpty}"></span>
+                                    <span style="color: red;" th:if="${#fields.hasErrors('csvFile3')}" th:errors="*{csvFile3}"></span>
+                                    <div th:if="${validationErrors3}" class="input-group">
+                                        <ul>
+                                            <li th:each="error : ${validationErrors3}" style="color: red;">
                                                 <span th:text="${error}"></span>
                                             </li>
                                         </ul>
