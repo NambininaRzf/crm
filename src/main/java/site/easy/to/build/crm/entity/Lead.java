@@ -32,6 +32,7 @@ public class Lead {
     @Column(name = "meeting_id")
     private String meetingId;
 
+    @JsonIgnore
     @Column(name = "google_drive")
     private Boolean googleDrive;
 

@@ -70,6 +70,7 @@ public class Data1ValidatorService {
                 ticket.setDescription("Ticket " + data.getSubjectOrName() + " description");
                 // ajouter priority
                 ticket.setPriority("low");
+                ticket.setCreatedAt(LocalDateTime.now());
 
                 Ticket ticket1 = ticketService.save(ticket);
                 CustomerExpenses customerExpenses = new CustomerExpenses();

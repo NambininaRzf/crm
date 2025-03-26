@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import site.easy.to.build.crm.entity.Customer;
 import site.easy.to.build.crm.entity.CustomerExpenses;
 import site.easy.to.build.crm.entity.TauxStorage;
+import site.easy.to.build.crm.entity.Ticket;
 import site.easy.to.build.crm.repository.CustomerExpensesRepository;
 import site.easy.to.build.crm.service.taux.TauxStorageService;
 import site.easy.to.build.crm.util.myexception.DepassementException;
@@ -103,5 +104,9 @@ public class CustomerExpensesService {
 
     public List<CustomerExpenses>  findAll(){
         return customerExpensesRepository.findAll(); 
+    }
+
+    public void deleteById(Long ticket) {
+        customerExpensesRepository.deleteById(ticket);
     }
 }

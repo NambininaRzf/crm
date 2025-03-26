@@ -12,4 +12,7 @@ TRUNCATE TABLE `google_drive_file`;
 TRUNCATE TABLE `lead_action`;
 TRUNCATE TABLE `lead_settings`;
 TRUNCATE TABLE `ticket_settings`;
+TRUNCATE TABLE `customer_expenses`;
+TRUNCATE TABLE `customer_budget`;
+TRUNCATE TABLE `taux_storaged`;
 SET FOREIGN_KEY_CHECKS = 1;

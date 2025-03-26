@@ -4,8 +4,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import site.easy.to.build.crm.model.dto.LoginRequest;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -51,8 +54,13 @@ public class AuthController {
 
             // Réponse JSON avec le token et les rôles
             return ResponseEntity.ok(new AuthResponse(token, roles));
-        } catch (Exception e) {
-            return ResponseEntity.status(401).body("Erreur : Identifiants incorrects !");
+        }catch (BadCredentialsException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Erreur : Identifiants incorrects !");
+        } catch (DisabledException ex) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Erreur : Compte désactivé !");
+        } catch (Exception ext) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur interne du serveur !");
         }
     }
 

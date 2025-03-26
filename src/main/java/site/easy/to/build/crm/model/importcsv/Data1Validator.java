@@ -15,7 +15,8 @@ public class Data1Validator {
     private String status;
     private double expense;
 
-    private static final Set<String> VALID_STATUSES = Set.of("meeting-to-schedule", "open", "archived");
+    private static final Set<String> VALID_STATUSES = Set.of("meeting-to-schedule", "open", "archived","scheduled","success",
+                "assign-to-sales","assigned","on-hold","in-progress","resolved","closed","reopened","pending-customer-response","escalated","archived");
     private static final Set<String> VALID_TYPE = Set.of("lead", "ticket");
 
     public void setCustomerEmail(String email, List<String> erreurs, int ligne) {
